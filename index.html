@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click the Box Game</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        #game-container { position: relative; width: 400px; height: 400px; margin: auto; border: 2px solid black; overflow: hidden; }
+        .box { position: absolute; width: 50px; height: 50px; background-color: red; cursor: pointer; transition: transform 0.1s ease-in-out; }
+        #restart-btn { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Click the Box Game</h1>
+    <p>Score: <span id="score">0</span></p>
+    <p>Time Left: <span id="time">30</span> seconds</p>
+    <div id="game-container"></div>
+    <button id="restart-btn" onclick="restartGame()">Restart</button>
+    
+    <!-- Ad Space -->
+    <div id="ad-container" style="margin-top:20px;">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <ins class="adsbygoogle"
+            style="display:block; width: 300px; height: 250px; margin: auto;"
+            data-ad-client="YOUR_ADSENSE_CLIENT_ID"
+            data-ad-slot="YOUR_AD_SLOT_ID"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+    
+    <script>
+        let score = 0;
+        let timeLeft = 30;
+        let timer;
+        const gameContainer = document.getElementById("game-container");
+        const timeDisplay = document.getElementById("time");
+        const scoreDisplay = document.getElementById("score");
+
+        function createBox() {
+            if (timeLeft <= 0) return;
+            const box = document.createElement("div");
+            box.classList.add("box");
+            box.style.top = Math.random() * 350 + "px";
+            box.style.left = Math.random() * 350 + "px";
+            box.style.backgroundColor = getRandomColor();
+            box.style.transform = `scale(${Math.random() * 0.5 + 0.75})`;
+
+            box.addEventListener("click", function() {
+                score++;
+                scoreDisplay.innerText = score;
+                box.remove();
+                createBox();
+            });
+
+            gameContainer.appendChild(box);
+
+            setTimeout(() => { if (box.parentNode) box.remove(); createBox(); }, Math.random() * 1500 + 500);
+        }
+
+        function getRandomColor() {
+            return `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
+        }
+
+        function countdown() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timeDisplay.innerText = timeLeft;
+                timer = setTimeout(countdown, 1000);
+            } else {
+                alert("Game Over! Your Score: " + score);
+            }
+        }
+
+        function restartGame() {
+            clearTimeout(timer);
+            score = 0;
+            timeLeft = 30;
+            scoreDisplay.innerText = score;
+            timeDisplay.innerText = timeLeft;
+            gameContainer.innerHTML = "";
+            countdown();
+            createBox();
+        }
+
+        countdown();
+        createBox();
+    </script>
+</body>
+</html>
